@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B49AAD271EC0999C00E6F0FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B49AAD261EC0999C00E6F0FC /* main.cpp */; };
+		B49AAD601EC09D7800E6F0FC /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = B49AAD5F1EC09D7800E6F0FC /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -52,6 +53,8 @@
 		B49AAD5B1EC09B8C00E6F0FC /* convergence.R */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.rez; path = convergence.R; sourceTree = "<group>"; };
 		B49AAD5C1EC09B8C00E6F0FC /* wilcoxon.R */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.rez; path = wilcoxon.R; sourceTree = "<group>"; };
 		B49AAD5D1EC09B8C00E6F0FC /* wilcoxon-params.R */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.rez; path = "wilcoxon-params.R"; sourceTree = "<group>"; };
+		B49AAD5E1EC09D7800E6F0FC /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		B49AAD5F1EC09D7800E6F0FC /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +71,8 @@
 		B49AAD111EC0994D00E6F0FC = {
 			isa = PBXGroup;
 			children = (
+				B49AAD5E1EC09D7800E6F0FC /* LICENSE */,
+				B49AAD5F1EC09D7800E6F0FC /* README.md */,
 				B49AAD561EC09B8C00E6F0FC /* scripts */,
 				B49AAD3F1EC09A0200E6F0FC /* data */,
 				B49AAD251EC0999C00E6F0FC /* src */,
@@ -205,6 +210,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B49AAD601EC09D7800E6F0FC /* README.md in Sources */,
 				B49AAD271EC0999C00E6F0FC /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
