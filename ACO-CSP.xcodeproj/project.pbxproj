@@ -55,6 +55,7 @@
 		B49AAD5D1EC09B8C00E6F0FC /* wilcoxon-params.R */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.rez; path = "wilcoxon-params.R"; sourceTree = "<group>"; };
 		B49AAD5E1EC09D7800E6F0FC /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		B49AAD5F1EC09D7800E6F0FC /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		B49AAD611EC09E4E00E6F0FC /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +72,7 @@
 		B49AAD111EC0994D00E6F0FC = {
 			isa = PBXGroup;
 			children = (
+				B49AAD611EC09E4E00E6F0FC /* .gitignore */,
 				B49AAD5E1EC09D7800E6F0FC /* LICENSE */,
 				B49AAD5F1EC09D7800E6F0FC /* README.md */,
 				B49AAD561EC09B8C00E6F0FC /* scripts */,
