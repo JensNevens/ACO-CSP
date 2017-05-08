@@ -8,18 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		B49AAD271EC0999C00E6F0FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B49AAD261EC0999C00E6F0FC /* main.cpp */; };
-		B49AAD601EC09D7800E6F0FC /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = B49AAD5F1EC09D7800E6F0FC /* README.md */; };
+		B49AAD621EC09F9300E6F0FC /* ACO-CSP in CopyFiles */ = {isa = PBXBuildFile; fileRef = B49AAD1A1EC0994D00E6F0FC /* ACO-CSP */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		B49AAD181EC0994D00E6F0FC /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
+			buildActionMask = 12;
+			dstPath = "/Users/Jens/Documents/Git/ACO-CSP";
 			dstSubfolderSpec = 0;
 			files = (
+				B49AAD621EC09F9300E6F0FC /* ACO-CSP in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -212,7 +213,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B49AAD601EC09D7800E6F0FC /* README.md in Sources */,
 				B49AAD271EC0999C00E6F0FC /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
