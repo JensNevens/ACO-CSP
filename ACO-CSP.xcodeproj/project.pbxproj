@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B454DFE61EC0CC1F00FA3A1E /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B454DFE41EC0CC1F00FA3A1E /* utils.cpp */; };
 		B49AAD271EC0999C00E6F0FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B49AAD261EC0999C00E6F0FC /* main.cpp */; };
 		B49AAD621EC09F9300E6F0FC /* ACO-CSP in CopyFiles */ = {isa = PBXBuildFile; fileRef = B49AAD1A1EC0994D00E6F0FC /* ACO-CSP */; };
 		B49AAD651EC0A9E500E6F0FC /* ant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B49AAD631EC0A9E500E6F0FC /* ant.cpp */; };
@@ -48,6 +49,8 @@
 		B454DFE11EC0C18100FA3A1E /* 4-50-10000-2-6.csp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4-50-10000-2-6.csp"; sourceTree = "<group>"; };
 		B454DFE21EC0C18100FA3A1E /* instances_opt.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = instances_opt.txt; sourceTree = "<group>"; };
 		B454DFE31EC0C18100FA3A1E /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		B454DFE41EC0CC1F00FA3A1E /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
+		B454DFE51EC0CC1F00FA3A1E /* utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 		B49AAD1A1EC0994D00E6F0FC /* ACO-CSP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "ACO-CSP"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B49AAD261EC0999C00E6F0FC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		B49AAD571EC09B8C00E6F0FC /* boxplot-params.R */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.rez; path = "boxplot-params.R"; sourceTree = "<group>"; };
@@ -141,6 +144,8 @@
 				B49AAD641EC0A9E500E6F0FC /* ant.hpp */,
 				B49AAD661EC0A9FC00E6F0FC /* csp.cpp */,
 				B49AAD671EC0A9FC00E6F0FC /* csp.hpp */,
+				B454DFE41EC0CC1F00FA3A1E /* utils.cpp */,
+				B454DFE51EC0CC1F00FA3A1E /* utils.hpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -226,6 +231,7 @@
 				B49AAD681EC0A9FC00E6F0FC /* csp.cpp in Sources */,
 				B49AAD271EC0999C00E6F0FC /* main.cpp in Sources */,
 				B49AAD651EC0A9E500E6F0FC /* ant.cpp in Sources */,
+				B454DFE61EC0CC1F00FA3A1E /* utils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

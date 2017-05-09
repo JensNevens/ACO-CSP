@@ -28,7 +28,8 @@ public:
     long int getSetSize();       /* n: the size of the string set S */
     long int getStringSize();    /* l: the length of each string s in S */
     
-    long int getDistance(char *string);
+    long int getDistance(long int* solution);
+    long int getCount(long int i, long int j);
 
 };
 

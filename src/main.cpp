@@ -17,15 +17,14 @@
 #include "csp.hpp"
 
 char* instance_file=NULL;
-CSP* csp;
+CSP*  csp;
 
-/*Probabilistic rule related variables*/
-double  ** pheromone;      /* pheromone matrix */
-double  ** heuristic;      /* heuristic information matrix */
-double  ** probability;    /* combined value of pheromone X heuristic information */
-double initial_pheromone=1.0;
+/* Probabilistic rule related variables */
+double** pheromone;      /* pheromone matrix */
+double** heuristic;      /* heuristic information matrix */
+double** probability;    /* combined value of pheromone X heuristic information */
 
-long int max_budget;       // The amount of solutions constructed by each ant
+long int max_budget;     /* The amount of solutions constructed by the ants */
 long int budget=0;
 double alpha;
 double beta;
@@ -35,9 +34,9 @@ long int seed = -1;
 
 std::vector<Ant> colony;
 Ant best_ant;
-long int best_tour_length=LONG_MAX;     /* length of the shortest tour found */
+long int best_string_len=LONG_MAX;     /* length of the best string found */
 
-/*Default parameters*/
+/* Default parameters */
 void setDefaultParameters() {
     alpha=1;
     beta=1;
@@ -45,10 +44,10 @@ void setDefaultParameters() {
     n_ants=10;
     max_budget=1000;
     instance_file=NULL;
-    seed=seed= (long int) time(NULL);
+    seed=(long int) time(NULL);
 }
 
-/*Print default parameters*/
+/* Print default parameters */
 void printParameters() {
     std::cout << "\nACO parameters:\n"
     << "  ants: "  << n_ants << "\n"
@@ -57,11 +56,10 @@ void printParameters() {
     << "  rho: "   << rho << "\n"
     << "  budget: " << max_budget << "\n"
     << "  seed: "   << seed << "\n"
-    << "  initial pheromone: "   << initial_pheromone << "\n"
     << std::endl;
 }
 
-/*Print help when program is called with no params*/
+/* Print help when program is called with no params */
 void printHelp() {
     std::cout << "\nACO Usage:\n"
     << "   ./aco --ants <int> --alpha <float> --beta <float> --rho <float> --budget <int> --seed <int> --instance <path>\n\n"
@@ -74,15 +72,12 @@ void printHelp() {
     << "   --budget: Maximum number of strings to build (integer). Default=1000.\n"
     << "   --seed: Number for the random seed generator.\n"
     << "   --instance: Path to the instance file\n"
-    << "\nACO other parameters:\n"
-    << "   initial pheromone: "   << initial_pheromone << "\n"
     << std::endl;
-    
 }
 
 
 /* Read arguments from command line */
-bool readArguments(int argc, char *argv[]) {
+bool readArguments(int argc, char* argv[]) {
     
     setDefaultParameters();
     
@@ -125,171 +120,162 @@ bool readArguments(int argc, char *argv[]) {
 }
 
 void printPheromone () {
-    long int i, j;
-    long int size = tsp->getSize();
+    long int m = csp->getAlphabetSize();
+    long int l = csp->getStringSize();
     
-    printf("\n");
-    for ( i = 0 ; i < size ; i++ ) {
-        for ( j = 0 ; j < size ; j++ ) {
-            printf(" %lf ", pheromone[i][j]);
+    printf("\nPheromone:\n");
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < l; j++) {
+            printf(" %4.4lf", pheromone[i][j]);
         }
         printf("\n");
     }
 }
 
 void printProbability () {
-    long int i, j;
-    long int size = tsp->getSize();
+    long int m = csp->getAlphabetSize();
+    long int l = csp->getStringSize();
     
     printf("\nProbability:\n");
-    for ( i = 0 ; i < size ; i++ ) {
-        for ( j = 0 ; j < size ; j++ ) {
+    for (int i = 0 ; i < m; i++) {
+        for (int j = 0 ; j < l; j++) {
             printf(" %4.4lf ", probability[i][j]);
         }
         printf("\n");
     }
 }
 
-/*Create colony structure*/
+/* Create colony structure */
 void createColony() {
     std::cout << "Creating colony.\n\n";
-    for (int i = 0 ; i < n_ants ; i++ ) {
+    for (int i = 0 ; i < n_ants; i++) {
         colony.push_back(Ant(csp, probability, &seed));
     }
 }
 
-/*Initialize pheromone with an initial value*/
-void initializePheromone( double initial_value ) {
-    long int size = tsp->getSize();
+/* Initialize pheromone with an initial value */
+void initializePheromone() {
+    long int m = csp->getAlphabetSize();
+    long int l = csp->getStringSize();
     
-    pheromone = new double* [size];
-    for (int i = 0 ; i < size ; i++ ) {
-        pheromone[i] = new double [size];
-        for (int j = 0  ; j < size ; j++ ) {
-            if (i==j) pheromone[i][j] = 0.0;
-            else pheromone[i][j] = initial_value;
-            /* symmetric TSP instances; hence phermone[i][j] = pheromone[j][i] */
+    pheromone = new double* [m];
+    for (int i = 0 ; i < m; i++) {
+        pheromone[i] = new double[l];
+        for (int j = 0; j < l; j++) {
+            pheromone[i][j] = (double)(1.0 / m);
         }
     }
 }
 
-// Initialize the heuristic information matrix
+/* Initialize the heuristic information matrix */
 void initializeHeuristic () {
-    long int size = tsp->getSize();
+    long int m = csp->getAlphabetSize();
+    long int l = csp->getStringSize();
     
-    heuristic = new double* [size];
-    for (int i = 0 ; i < size ; i++) {
-        heuristic[i] = new double[size];
-        for (int j = 0 ; j < size ; j++) {
-            if (i != j) heuristic[i][j] = 1.0 / tsp->getDistance(i, j);
-            else heuristic[i][j] = 0.0;
+    heuristic = new double* [m];
+    for (int i = 0 ; i < m; i++) {
+        heuristic[i] = new double[l];
+        for (int j = 0; j < l; j++) {
+            heuristic[i][j] = (double)(1.0 / csp->getCount(i, j));
         }
     }
 }
 
-// Initialize the probability information matrix
+/* Initialize the probability information matrix */
 void initializeProbability () {
-    long int size = tsp->getSize();
+    long int m = csp->getAlphabetSize();
+    long int l = csp->getStringSize();
     
-    probability = new double* [size];
-    for (int i = 0; i < size; i++) {
-        probability[i] = new double[size];
-        for (int j = 0; j < size; j++) {
+    probability = new double* [m];
+    for (int i = 0; i < m; i++) {
+        probability[i] = new double[l];
+        for (int j = 0; j < l; j++) {
             probability[i][j] = 0.0;
         }
     }
 }
 
-// Calculate probability in base of heuristic
-// information and pheromone
+/* Calculate probability using heuristic information and pheromone */
 void calculateProbability () {
-    long int size = tsp->getSize();
+    long int m = csp->getAlphabetSize();
+    long int l = csp->getStringSize();
     
-    for (int i = 0 ; i < size ; i++) {
-        probability[i][i] = 0.0;
-        for (int j = (i+1) ; j < size ; j++) {
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < l; j++) {
             probability[i][j] =
-            pow(pheromone[i][j], alpha) * pow(heuristic[i][j], beta);
-            probability[j][i] = probability[i][j];
+                pow(pheromone[i][j], alpha) * pow(heuristic[i][j], beta);
         }
     }
 }
 
-/*Pheromone evaporation*/
+/* Pheromone evaporation */
 void evaporatePheromone(){
-    long int size = tsp->getSize();
+    long int m = csp->getAlphabetSize();
+    long int l = csp->getStringSize();
     
-    for (int i = 0 ; i < size ; i++ ) {
-        for (int j = i+1  ; j < size ; j++ ) {
+    for (int i = 0 ; i < m; i++) {
+        for (int j = 0; j < l; j++) {
             pheromone[i][j] = (double)(1.0 - rho) * pheromone[i][j];
-            pheromone[j][i] = pheromone[i][j];
         }
     }
 }
 
-/*Pheromone evaporation of best tour only*/
+/* Pheromone evaporation of best string only */
 void evaporatePheromone(Ant best_ant) {
-    long int size = tsp->getSize();
-    long int* tour = best_ant.getTour();
+    long int l = csp->getStringSize();
     
-    for (int i = 0; i < (size-1); i++) {
-        long int from = tour[i];
-        long int to = tour[i+1];
-        pheromone[from][to] = (double)(1.0 - rho) * pheromone[from][to];
-        pheromone[to][from] = pheromone[from][to];
+    for (int j = 0; j < l; j++) {
+        // Get the idx in the alphabet of the j'th letter
+        // of the ant's solution string
+        long int i = best_ant.getLetter(j);
+        pheromone[i][j] = (double)(1.0 - rho) * pheromone[i][j];
     }
-    long int last = tour[size-1];
-    long int first = tour[0];
-    pheromone[last][first] = (double)(1.0 - rho) * pheromone[last][first];
-    pheromone[first][last] = pheromone[last][first];
 }
 
-/*Adds simetrically pheromone to the matrix*/
-void addPheromone(long int i , long int j, double delta) {
+/* Adds pheromone to the matrix */
+void addPheromone(long int i, long int j, double delta) {
     pheromone[i][j] = pheromone[i][j] + delta;
-    pheromone[j][i] = pheromone[j][i] + delta;
 }
 
-/*Update pheromone*/
+/* Update pheromone */
 void depositPheromone(){
-    long int size = tsp->getSize();
+    long int l = csp->getStringSize();
     double deltaf;
     
-    for (int i=0; i< n_ants; i++) {
-        deltaf = 1.0 / (double) colony[i].getTourLength();
-        for (int j =1 ; j < size ; j ++) {
-            addPheromone(colony[i].getCity(j-1), colony[i].getCity(j), deltaf);
+    for (int a = 0; a < n_ants; a++) {
+        deltaf = (double)(1.0 - (colony[a].getStringDistance() / l));
+        for (int j = 0; j < l; j++) {
+            // Get the idx in the alphabet of the j'th letter
+            // of the ant's solution string
+            long int i = colony[a].getLetter(j);
+            addPheromone(i, j, deltaf);
         }
-        addPheromone(colony[i].getCity(size-1), colony[i].getCity(0), deltaf);
     }
 }
 
-/*Update pheromone of best tour only*/
+/* Update pheromone of best string only */
 void depositPheromone(Ant best_ant) {
-    long int size = tsp->getSize();
-    double deltaf = 1.0 / (double) best_ant.getTourLength();
+    long int l = csp->getStringSize();
+    double deltaf = 1.0 - (double) best_ant.getStringDistance() / l;
     
-    for (int i=1; i < size; i++) {
-        addPheromone(best_ant.getCity(i-1), best_ant.getCity(i), deltaf);
+    for (int j = 0; j < l; j++) {
+        long int i = best_ant.getLetter(j);
+        addPheromone(i, j, deltaf);
     }
-    addPheromone(best_ant.getCity(size-1), best_ant.getCity(0), deltaf);
 }
 
-/*Check termination condition based on iterations or tours.
- One of the criteria must be active (=!0).*/
+/* Check termination condition based on budget */
 bool terminationCondition(){
-    if (max_tours != 0 && tours >= max_tours)
-        return(true);
-    if (max_iterations !=0 && iterations >= max_iterations)
+    if (max_budget != 0 && budget >= max_budget)
         return(true);
     return(false);
 }
 
-/*Free memory used*/
+/* Free memory used */
 void freeMemory(){
     
-    delete tsp;
-    for(int i=0; i < tsp->getSize(); i++){
+    delete csp;
+    for(int i = 0; i < csp->getAlphabetSize(); i++){
         delete[] pheromone[i];
         delete[] heuristic[i];
         delete[] probability[i];
@@ -302,51 +288,41 @@ void freeMemory(){
     }
 }
 
-/*This function calls methods that MUST be implemented by you*/
+/* MAIN */
 int main(int argc, char *argv[] ){
     if(!readArguments(argc, argv)){
         exit(1);
     }
     
-    tsp = new TSP(instance_file, verbose);
+    csp = new CSP(instance_file);
     
-    initializePheromone(initial_pheromone);
+    initializePheromone();
     initializeHeuristic();
     initializeProbability();
     calculateProbability();
     createColony();
     
-    //Iterations loop
+    // Iterations loop
     while(!terminationCondition()){
-        //build solutions
-        for(int i=0; i< n_ants; i++){
-            //Construct solution
+
+        for(int i = 0; i < n_ants; i++) {
+            // Construct solution
             colony[i].Search();
-            colony[i].localPheromoneUpdate(pheromone, rho, initial_pheromone);
-            /*Check for new local optimum*/
-            if(best_tour_length > colony[i].getTourLength()){
-                best_tour_length = colony[i].getTourLength();
+            // Check for new local optimum
+            if (best_string_len > colony[i].getStringDistance()) {
+                best_string_len = colony[i].getStringDistance();
                 best_ant = colony[i];
-                printf("%ld:%ld\n", tours, best_tour_length);
-                if (verbose) {
-                    std::cout << "\nNew best solution found! Cost: "
-                    << best_tour_length
-                    << "\n";
-                }
+                printf("%ld:%ld\n", budget, best_string_len);
             }
-            tours++;
+            budget++;
         }
         
         evaporatePheromone(best_ant);
         depositPheromone(best_ant);
         calculateProbability();
-        iterations++;
     }
     
-    freeMemory();   // Free memory.
-    if (verbose) {
-        std::cout << "\nEnd ACO execution.\n" << std::endl;
-        std::cout << "\nBest solution found: " << best_tour_length << "\n";
-    }
-    printf("Best %ld\n", best_tour_length);
+    freeMemory();
+    std::cout << "\nEnd ACO execution.\n" << std::endl;
+    std::cout << "\nBest solution found: " << best_string_len << "\n";
 }

@@ -39,10 +39,15 @@ CSP::CSP(const char *file_name) {
     
     // Read the set of strings
     for (int i = 0; i < n; i++) {
+        set[i] = new char[l];
         infile >> set[i];
     }
     
     printf("... done\n\n");
+    printf("CSP parameters:\n");
+    printf("  Alphabet length is %li\n", m);
+    printf("  Set size is %li\n", n);
+    printf("  String length is %li\n", l);
 }
 
 /* Destructor */
@@ -73,29 +78,47 @@ long int CSP::hamming(char* entry, char* string) {
     long int d = 0;
     for (int i = 0; i < l; i++) {
         if (entry[i] != string[i]) {
-            d += 1;
+            d++;
         }
     }
     return d;
 }
 
-/* Compute the max Hamming distance between a given string and the set S */
-long int CSP::getDistance(char* string) {
-    long int max_d = 0;
+/* Compute the max Hamming distance between a given solution and the set S */
+long int CSP::getDistance(long int* solution) {
+    // Transform solution to alphabet string
+    char* string = new char[l];
+    for (int i = 0; i < l; i++) {
+        long int idx = solution[i];
+        string[i] = alphabet[idx];
+    }
     
-    long int len = strlen(string);
-    if (len != l) {
-        std::cerr << "Given string is of length " << len
-                  << " but should be of length " << l << "\n";
-    } else {
-        for (int i = 0; i < n; i++) {
-            char* entry = set[i];
-            long int d = hamming(entry, string);
-            if (d > max_d) {
-                max_d = d;
-            }
+    // Compute the max distance between this string
+    // and all strings in the set
+    long int max_d = 0;
+    for (int i = 0; i < n; i++) {
+        char* entry = set[i];
+        long int d = hamming(entry, string);
+        if (d > max_d) {
+            max_d = d;
         }
     }
     return max_d;
 }
+
+/* How many strings in the set have the letter i at the position j in the string */
+long int CSP::getCount(long int i, long int j) {
+    char letter = alphabet[i];
+    
+    long int count = 0;
+    for (int i = 0; i < n; i++) {
+        char* string = set[i];
+        if (string[j] == letter) {
+            count++;
+        }
+    }
+    return count;
+}
+
+
 
