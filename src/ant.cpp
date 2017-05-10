@@ -128,5 +128,44 @@ void Ant::printString() {
     
 }
 
+void move(long int* src, long int* dest, long int size) {
+    for (int i = 0; i < size; i++) {
+        dest[i] = src[i];
+    }
+}
+
+/* Local Search on the current solution.
+   Replace each letter by every other possible letter
+   and check if the score improves */
+void Ant::LocalSearch() {
+    // Create a copy of the current solution
+    long int* copy = new long int[l];
+    move(string, copy, l);
+    // Find a better solution
+    long int best_d = string_distance;
+    for (int i = 0; i < l; i++) {
+        long int current = string[i];
+        long int replace = string[i];
+        for (long int j = 0; j < m; j++) {
+            if (j != current) {
+                copy[i] = j;
+                long int d = csp->getDistance(copy);
+                if (d < best_d) {
+                    best_d = d;
+                    replace = j;
+                }
+            }
+        }
+        copy[i] = replace;
+    }
+    // If improvement, save as new solution
+    if (best_d < string_distance) {
+        move(copy, string, l);
+        computeStringDistance();
+    }
+    delete [] copy;
+}
+
+
 
 

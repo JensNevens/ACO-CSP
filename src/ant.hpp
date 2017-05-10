@@ -39,11 +39,15 @@ public:
     
     void freeAnt();
     
+    /* Construct a solution */
     void Search();
     /* Returns the idx in the alphabet of the letter at position idx in the ant's solution */
     long int getLetter(long int idx);
     /* Returns the max distance between the ant's solution string and all strings in the CSP set */
     long int getStringDistance();
+    /* Local Search on the current solution */
+    void LocalSearch();
+    
     
 };
 

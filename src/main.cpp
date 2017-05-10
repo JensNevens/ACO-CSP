@@ -13,8 +13,10 @@
 #include <string.h>
 #include <vector>
 
+#include "utils.hpp"
 #include "ant.hpp"
 #include "csp.hpp"
+
 
 char* instance_file=NULL;
 CSP*  csp;
@@ -36,6 +38,8 @@ bool mmas;               /* Flag to indicate whether to use mmas */
 double tau_max;
 double tau_min;
 
+bool local;              /* Flag to indicate whether to use local search */
+
 std::vector<Ant> colony;
 Ant best_ant;
 long int best_string_len=LONG_MAX;     /* length of the best string found */
@@ -50,6 +54,7 @@ void setDefaultParameters() {
     instance_file=NULL;
     seed=(long int) time(NULL);
     mmas=false;
+    local=false;
 }
 
 /* Print default parameters */
@@ -62,6 +67,7 @@ void printParameters() {
     << "  budget: " << max_budget << "\n"
     << "  seed: "   << seed << "\n"
     << "  mmas: "   << mmas << "\n"
+    << "  local: "  << local << "\n"
     << std::endl;
 }
 
@@ -79,6 +85,7 @@ void printHelp() {
     << "   --seed: Number for the random seed generator.\n"
     << "   --instance: Path to the instance file\n"
     << "   --mmas: Flag to indicate Min Max Ant System usage\n"
+    << "   --local: Flag to indicate Local Search usage\n"
     << std::endl;
 }
 
@@ -112,7 +119,8 @@ bool readArguments(int argc, char* argv[]) {
             i++;
         } else if(strcmp(argv[i], "--mmas") == 0) {
             mmas = true;
-            i++;
+        } else if(strcmp(argv[i], "--local") == 0) {
+            local = true;
         } else if(strcmp(argv[i], "--help") == 0) {
             printHelp();
             return(false);
@@ -316,7 +324,7 @@ void depositPheromone(Ant best_ant) {
             }
         }
     } else {
-        double deltaf = 1.0 - (double) best_ant.getStringDistance() / l;
+        deltaf = 1.0 - (double) best_ant.getStringDistance() / l;
         for (int j = 0; j < l; j++) {
             long int i = best_ant.getLetter(j);
             addPheromone(i, j, deltaf);
@@ -376,6 +384,24 @@ int main(int argc, char *argv[] ){
                 printf("%ld:%ld\n", budget, best_string_len);
             }
             budget++;
+            printf("%li\n", budget);
+        }
+        if (local) {
+            // Best ant does Local Search
+            best_ant.LocalSearch();
+            if (best_string_len > best_ant.getStringDistance()) {
+                best_string_len = best_ant.getStringDistance();
+                printf("%ld:%ld\n", budget, best_string_len);
+            }
+            // Random ant does Local Search
+            long int ant_idx = (long int) ran01(&seed) * n_ants;
+            Ant random_ant = colony[ant_idx];
+            random_ant.LocalSearch();
+            if (best_string_len > random_ant.getStringDistance()) {
+                best_string_len = random_ant.getStringDistance();
+                best_ant = random_ant;
+                printf("%ld:%ld\n", budget, best_string_len);
+            }
         }
         // Update pheromone and probability
         evaporatePheromone(best_ant);

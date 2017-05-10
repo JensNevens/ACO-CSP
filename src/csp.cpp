@@ -109,6 +109,7 @@ long int CSP::getDistance(long int* solution) {
             max_d = d;
         }
     }
+    delete [] string;
     return max_d;
 }
 
