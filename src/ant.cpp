@@ -61,6 +61,7 @@ void Ant::freeAnt() {
 
 /* Generate tour using probabilities */
 void Ant::Search() {
+    // Clear the currenc solution
     clearString();
     
     // Select first letter at random
@@ -73,7 +74,7 @@ void Ant::Search() {
     }
     // Compute the quality of the string
     computeStringDistance();
-    printString();
+    // printString();
 }
 
 /* Compute the distance of the string to the CSP set */

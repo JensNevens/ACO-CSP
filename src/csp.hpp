@@ -20,6 +20,7 @@ class CSP {
     char **set;
     
     long int hamming(char* entry, char* string);
+    void printParameters();
     
 public:
     CSP(const char *file_name);

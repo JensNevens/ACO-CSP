@@ -75,7 +75,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--rho 0.03"
+            argument = "--rho 0.06"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -87,7 +87,11 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--instance /Users/Jens/Documents/Git/ACO-CSP/data/instances/toy.csp"
+            argument = "--instance /Users/Jens/Documents/Git/ACO-CSP/data/instances/2-30-10000-1-9.csp"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--mmas"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

@@ -44,10 +44,7 @@ CSP::CSP(const char *file_name) {
     }
     
     printf("... done\n\n");
-    printf("CSP parameters:\n");
-    printf("  Alphabet length is %li\n", m);
-    printf("  Set size is %li\n", n);
-    printf("  String length is %li\n", l);
+    printParameters();
 }
 
 /* Destructor */
@@ -56,6 +53,14 @@ CSP::~CSP() {
     
     free(alphabet);
     free(set);
+}
+
+void CSP::printParameters() {
+    std::cout << "\nCSP parameters:\n"
+    << "  alphabet length m: "  << m << "\n"
+    << "  set size n: " << n << "\n"
+    << "  string length l: " << l << "\n"
+    << std::endl;
 }
 
 /* Return the size of the alphabet A */
@@ -85,11 +90,12 @@ long int CSP::hamming(char* entry, char* string) {
 }
 
 /* Compute the max Hamming distance between a given solution and the set S */
-long int CSP::getDistance(long int* solution) {
+long int CSP::getDistance(long int* solution) {    
     // Transform solution to alphabet string
     char* string = new char[l];
+    long int idx;
     for (int i = 0; i < l; i++) {
-        long int idx = solution[i];
+        idx = solution[i];
         string[i] = alphabet[idx];
     }
     

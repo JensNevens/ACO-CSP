@@ -24,13 +24,17 @@ double** pheromone;      /* pheromone matrix */
 double** heuristic;      /* heuristic information matrix */
 double** probability;    /* combined value of pheromone X heuristic information */
 
-long int max_budget;     /* The amount of solutions constructed by the ants */
-long int budget=0;
+long int max_budget;     /* The max amount of solutions constructed by the ants */
+long int budget=0;       /* The current amount of solutions constructed */
 double alpha;
 double beta;
 double rho;
 long int n_ants;
 long int seed = -1;
+
+bool mmas;               /* Flag to indicate whether to use mmas */
+double tau_max;
+double tau_min;
 
 std::vector<Ant> colony;
 Ant best_ant;
@@ -40,22 +44,24 @@ long int best_string_len=LONG_MAX;     /* length of the best string found */
 void setDefaultParameters() {
     alpha=1;
     beta=1;
-    rho=0.2;
+    rho=0.06;
     n_ants=10;
     max_budget=1000;
     instance_file=NULL;
     seed=(long int) time(NULL);
+    mmas=false;
 }
 
 /* Print default parameters */
 void printParameters() {
     std::cout << "\nACO parameters:\n"
-    << "  ants: "  << n_ants << "\n"
-    << "  alpha: " << alpha << "\n"
-    << "  beta: "  << beta << "\n"
-    << "  rho: "   << rho << "\n"
+    << "  ants: "   << n_ants << "\n"
+    << "  alpha: "  << alpha << "\n"
+    << "  beta: "   << beta << "\n"
+    << "  rho: "    << rho << "\n"
     << "  budget: " << max_budget << "\n"
     << "  seed: "   << seed << "\n"
+    << "  mmas: "   << mmas << "\n"
     << std::endl;
 }
 
@@ -72,6 +78,7 @@ void printHelp() {
     << "   --budget: Maximum number of strings to build (integer). Default=1000.\n"
     << "   --seed: Number for the random seed generator.\n"
     << "   --instance: Path to the instance file\n"
+    << "   --mmas: Flag to indicate Min Max Ant System usage\n"
     << std::endl;
 }
 
@@ -103,6 +110,9 @@ bool readArguments(int argc, char* argv[]) {
         } else if(strcmp(argv[i], "--instance") == 0) {
             instance_file = argv[i+1];
             i++;
+        } else if(strcmp(argv[i], "--mmas") == 0) {
+            mmas = true;
+            i++;
         } else if(strcmp(argv[i], "--help") == 0) {
             printHelp();
             return(false);
@@ -111,7 +121,7 @@ bool readArguments(int argc, char* argv[]) {
             return(false);
         }
     }
-    if(instance_file==NULL){
+    if (instance_file==NULL) {
         std::cout << "No instance file provided.\n";
         return(false);
     }
@@ -153,6 +163,15 @@ void createColony() {
     }
 }
 
+/* Initialize parameters of the ACO algorithm */
+void initializeParameters() {
+    if (mmas) {
+        tau_max = (double) 1.0 / csp->getAlphabetSize();
+        double ratio = csp->getAlphabetSize() * csp->getStringSize();
+        tau_min = (double) tau_max / ratio;
+    }
+}
+
 /* Initialize pheromone with an initial value */
 void initializePheromone() {
     long int m = csp->getAlphabetSize();
@@ -162,7 +181,11 @@ void initializePheromone() {
     for (int i = 0 ; i < m; i++) {
         pheromone[i] = new double[l];
         for (int j = 0; j < l; j++) {
-            pheromone[i][j] = (double)(1.0 / m);
+            if (mmas) {
+                pheromone[i][j] = tau_max;
+            } else {
+                pheromone[i][j] = (double) (1.0 / m);
+            }
         }
     }
 }
@@ -176,7 +199,7 @@ void initializeHeuristic () {
     for (int i = 0 ; i < m; i++) {
         heuristic[i] = new double[l];
         for (int j = 0; j < l; j++) {
-            heuristic[i][j] = (double)(1.0 / csp->getCount(i, j));
+            heuristic[i][j] = (double) (1.0 / csp->getCount(i, j));
         }
     }
 }
@@ -208,6 +231,15 @@ void calculateProbability () {
     }
 }
 
+/* Bound pheromone to range [tau_min, tau_max] */
+void boundPheromone(long int i, long int j) {
+    if (pheromone[i][j] > tau_max) {
+        pheromone[i][j] = tau_max;
+    } else if (pheromone[i][j] < tau_min) {
+        pheromone[i][j] = tau_min;
+    }
+}
+
 /* Pheromone evaporation */
 void evaporatePheromone(){
     long int m = csp->getAlphabetSize();
@@ -216,6 +248,10 @@ void evaporatePheromone(){
     for (int i = 0 ; i < m; i++) {
         for (int j = 0; j < l; j++) {
             pheromone[i][j] = (double)(1.0 - rho) * pheromone[i][j];
+            
+            if (mmas) {
+                boundPheromone(i, j);
+            }
         }
     }
 }
@@ -229,12 +265,20 @@ void evaporatePheromone(Ant best_ant) {
         // of the ant's solution string
         long int i = best_ant.getLetter(j);
         pheromone[i][j] = (double)(1.0 - rho) * pheromone[i][j];
+        
+        if (mmas) {
+            boundPheromone(i, j);
+        }
     }
 }
 
 /* Adds pheromone to the matrix */
 void addPheromone(long int i, long int j, double delta) {
     pheromone[i][j] = pheromone[i][j] + delta;
+    
+    if (mmas) {
+        boundPheromone(i, j);
+    }
 }
 
 /* Update pheromone */
@@ -255,12 +299,28 @@ void depositPheromone(){
 
 /* Update pheromone of best string only */
 void depositPheromone(Ant best_ant) {
+    long int m = csp->getAlphabetSize();
     long int l = csp->getStringSize();
-    double deltaf = 1.0 - (double) best_ant.getStringDistance() / l;
+    double deltaf;
     
-    for (int j = 0; j < l; j++) {
-        long int i = best_ant.getLetter(j);
-        addPheromone(i, j, deltaf);
+    if (mmas) {
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < l; j++) {
+                long int letter = best_ant.getLetter(j);
+                if (letter == i) {
+                    deltaf = rho * tau_max;
+                } else {
+                    deltaf = rho * tau_min;
+                }
+                addPheromone(i, j, deltaf);
+            }
+        }
+    } else {
+        double deltaf = 1.0 - (double) best_ant.getStringDistance() / l;
+        for (int j = 0; j < l; j++) {
+            long int i = best_ant.getLetter(j);
+            addPheromone(i, j, deltaf);
+        }
     }
 }
 
@@ -296,6 +356,7 @@ int main(int argc, char *argv[] ){
     
     csp = new CSP(instance_file);
     
+    initializeParameters();
     initializePheromone();
     initializeHeuristic();
     initializeProbability();
@@ -316,12 +377,12 @@ int main(int argc, char *argv[] ){
             }
             budget++;
         }
-        
+        // Update pheromone and probability
         evaporatePheromone(best_ant);
         depositPheromone(best_ant);
         calculateProbability();
     }
-    
+    // Free memory
     freeMemory();
     std::cout << "\nEnd ACO execution.\n" << std::endl;
     std::cout << "\nBest solution found: " << best_string_len << "\n";
