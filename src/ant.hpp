@@ -25,6 +25,7 @@ class Ant {
     CSP *csp;
     long int m;
     long int l;
+    long int n;
     
     void computeStringDistance();
     void clearString();
@@ -46,7 +47,7 @@ public:
     /* Returns the max distance between the ant's solution string and all strings in the CSP set */
     long int getStringDistance();
     /* Local Search on the current solution */
-    void LocalSearch();
+    void LocalSearch(double b_rep);
     
     
 };

@@ -23,6 +23,7 @@ Ant::Ant(CSP* csp_arg, double** prob_info, long int *pseed) {
     csp = csp_arg;
     m = csp->getAlphabetSize();
     l = csp->getStringSize();
+    n = csp->getSetSize();
     probability = prob_info;
     selection_prob = new double[m];
     string = new long int[l];
@@ -36,6 +37,7 @@ Ant::Ant(Ant const& other) {
     csp = other.csp;
     m = other.m;
     l = other.l;
+    n = other.n;
     probability = other.probability;
     selection_prob = new double[m];
     string = new long int[l];
@@ -65,7 +67,7 @@ void Ant::Search() {
     clearString();
     
     // Select first letter at random
-    string[0] = (long int)(ran01(seed) * (double) m);
+    string[0] = (long int) (ran01(seed) * (double) m);
     string_length++;
     // Select each letter
     for (int i = 1; i < l; i++) {
@@ -82,6 +84,7 @@ void Ant::computeStringDistance() {
     string_distance = csp->getDistance(string);
 }
 
+/* Return the quality of the current string */
 long int Ant::getStringDistance(){
     return(string_distance);
 }
@@ -128,42 +131,61 @@ void Ant::printString() {
     
 }
 
-void move(long int* src, long int* dest, long int size) {
-    for (int i = 0; i < size; i++) {
-        dest[i] = src[i];
-    }
-}
-
-/* Local Search on the current solution.
-   Replace each letter by every other possible letter
-   and check if the score improves */
-void Ant::LocalSearch() {
-    // Create a copy of the current solution
-    long int* copy = new long int[l];
-    move(string, copy, l);
-    // Find a better solution
-    long int best_d = string_distance;
-    for (int i = 0; i < l; i++) {
-        long int current = string[i];
-        long int replace = string[i];
-        for (long int j = 0; j < m; j++) {
-            if (j != current) {
-                copy[i] = j;
-                long int d = csp->getDistance(copy);
-                if (d < best_d) {
-                    best_d = d;
-                    replace = j;
+/* Local Search on the current solution. */
+void Ant::LocalSearch(double b_rep) {
+    // Initialize distance arrays
+    long int* dist = csp->getAllDistances(string);
+    long int* dist_cpy = new long int[n];
+    move(dist, dist_cpy, n);
+    // Initialize the loop counter N, the current max distance
+    // and the string representation of the current solution
+    int N = (int) (l * m * b_rep);
+    long int max_dist = string_distance;
+    char* sol_string = csp->solution2string(string);
+    // Start local search
+    do {
+        N -= 1;
+        long int max_idx = getMaxIdx(dist, n);
+        for (int j = 0; j < l; j++) {
+            if (!csp->sameLetters(sol_string, max_idx, j)) {
+                long int max = -1;
+                for (int k = 0; k < n; k++) {
+                    if (k != max_idx) {
+                        if (csp->sameLetters(sol_string, k, j)
+                            && !csp->sameLetters(max_idx, k, j)) {
+                            dist[k] += 1;
+                        } else if (!csp->sameLetters(sol_string, k, j)
+                                   && csp->sameLetters(max_idx, k, j)) {
+                            dist[k] -= 1;
+                        }
+                        if (max < dist[k]) {
+                            max = dist[k];
+                        }
+                    }
+                }
+                if (max_dist > max) {
+                    N = (int) ((l * m * b_rep) / 3);
+                }
+                if (max_dist >= max) {
+                    max_dist = max;
+                    sol_string[j] = csp->getLetter(max_idx, j);
+                    dist[max_idx] -= 1;
+                    move(dist, dist_cpy, n);
+                } else {
+                    move(dist_cpy, dist, n);
                 }
             }
         }
-        copy[i] = replace;
-    }
-    // If improvement, save as new solution
-    if (best_d < string_distance) {
-        move(copy, string, l);
-        computeStringDistance();
-    }
-    delete [] copy;
+    } while (N > 0);
+    // Finalize local search
+    long int* new_string = csp->string2solution(sol_string);
+    move(new_string, string, l);
+    string_distance = max_dist;
+    // Free up memory
+    delete [] dist;
+    delete [] dist_cpy;
+    delete [] sol_string;
+    delete [] new_string;
 }
 
 

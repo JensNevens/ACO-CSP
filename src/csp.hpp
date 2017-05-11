@@ -30,7 +30,17 @@ public:
     long int getStringSize();    /* l: the length of each string s in S */
     
     long int getDistance(long int* solution);
+    long int getDistance(long int* solution, long int i);
+    long int* getAllDistances(long int* solution);
+    
     long int getCount(long int i, long int j);
+    
+    char* solution2string(long int* solution);
+    long int* string2solution(char* string);
+    
+    bool sameLetters(char* string, long int j, long int pos);
+    bool sameLetters(long int i, long int j, long int pos);
+    char getLetter(long int i, long int pos);
 
 };
 

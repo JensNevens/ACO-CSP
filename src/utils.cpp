@@ -35,31 +35,25 @@ double ran01( long *idum ) {
     return ans;
 }
 
-/*** Pick a random number in range [min,max] or [min,max) ***/
-long int pickRandom(long int min, long int max, long *seed, bool max_incl) {
-    if (max_incl) {
-        return min + (ran01(seed) * ((max - min) + 1));
-    } else {
-        return min + (ran01(seed) * (max - min));
+/* Move the contents of one array to another. Arrays have equal size */
+void move(long int* src, long int* dest, long int size) {
+    for (int i = 0; i < size; i++) {
+        dest[i] = src[i];
     }
-    
 }
 
-/*** Select a random element according to a probability density function ***/
-int randomFromPDF(double *probs, int len) {
-    double r = (double) rand() / (double) RAND_MAX;
-    double cummulative = 0;
-    int idx = -1;
-    for (int i = 0; i < len; i++) {
-        cummulative += probs[i];
-        if (r <= cummulative) {
-            idx = i;
-            break;
+/* Get the idx of the largest element in the array */
+long int getMaxIdx(long int* arr, long int size) {
+    long int max_idx = -1;
+    long int max_val = 0;
+    for (int i = 0; i < size; i++) {
+        if (arr[i] > max_val) {
+            max_val = arr[i];
+            max_idx = i;
         }
     }
-    return idx;
+    return max_idx;
 }
-
 
 
 

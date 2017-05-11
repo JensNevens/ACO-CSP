@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 double ran01(long *idum);
-long int pickRandom(long int min, long int max, long *seed, bool max_incl);
-int randomFromPDF(double *probs, int len);
+void move(long int* src, long int* dest, long int size);
+long int getMaxIdx(long int* arr, long int size);
 
 #endif /* utils_hpp */

@@ -75,7 +75,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--rho 0.06"
+            argument = "--rho 0.1"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -83,7 +83,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--seed 123"
+            argument = "--seed 666"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -91,11 +91,19 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "--instance /Users/Jens/Documents/Git/ACO-CSP/data/random/4-10-200.csp"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "--mmas"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--local"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--brep 0.001"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

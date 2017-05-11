@@ -39,6 +39,7 @@ double tau_max;
 double tau_min;
 
 bool local;              /* Flag to indicate whether to use local search */
+double b_rep;            /* Local search parameter */
 
 std::vector<Ant> colony;
 Ant best_ant;
@@ -55,6 +56,7 @@ void setDefaultParameters() {
     seed=(long int) time(NULL);
     mmas=false;
     local=false;
+    b_rep=1.0;
 }
 
 /* Print default parameters */
@@ -68,6 +70,7 @@ void printParameters() {
     << "  seed: "   << seed << "\n"
     << "  mmas: "   << mmas << "\n"
     << "  local: "  << local << "\n"
+    << "  b_rep: "  << b_rep << "\n"
     << std::endl;
 }
 
@@ -86,6 +89,7 @@ void printHelp() {
     << "   --instance: Path to the instance file\n"
     << "   --mmas: Flag to indicate Min Max Ant System usage\n"
     << "   --local: Flag to indicate Local Search usage\n"
+    << "   --brep: Control number of Local Search steps\n"
     << std::endl;
 }
 
@@ -121,6 +125,9 @@ bool readArguments(int argc, char* argv[]) {
             mmas = true;
         } else if(strcmp(argv[i], "--local") == 0) {
             local = true;
+        } else if (strcmp(argv[i], "--brep") == 0) {
+            b_rep = atof(argv[i+1]);
+            i++;
         } else if(strcmp(argv[i], "--help") == 0) {
             printHelp();
             return(false);
@@ -174,9 +181,17 @@ void createColony() {
 /* Initialize parameters of the ACO algorithm */
 void initializeParameters() {
     if (mmas) {
-        tau_max = (double) 1.0 / csp->getAlphabetSize();
-        double ratio = csp->getAlphabetSize() * csp->getStringSize();
-        tau_min = (double) tau_max / ratio;
+        tau_max = 1.0 / (double) csp->getAlphabetSize();
+        double ratio = (double) csp->getAlphabetSize() * (double) csp->getStringSize();
+        tau_min = tau_max / ratio;
+    }
+}
+
+void updateParameters() {
+    if (mmas) {
+        tau_max = 1.0 / (double) best_string_len;
+        double ratio = (double) csp->getAlphabetSize() * (double) csp->getStringSize();
+        tau_min = tau_max / ratio;
     }
 }
 
@@ -192,7 +207,7 @@ void initializePheromone() {
             if (mmas) {
                 pheromone[i][j] = tau_max;
             } else {
-                pheromone[i][j] = (double) (1.0 / m);
+                pheromone[i][j] = 1.0 / (double) m;
             }
         }
     }
@@ -207,7 +222,8 @@ void initializeHeuristic () {
     for (int i = 0 ; i < m; i++) {
         heuristic[i] = new double[l];
         for (int j = 0; j < l; j++) {
-            heuristic[i][j] = (double) (1.0 / csp->getCount(i, j));
+            heuristic[i][j] =
+                (double) csp->getCount(i, j) / (double) csp->getSetSize();
         }
     }
 }
@@ -255,7 +271,7 @@ void evaporatePheromone(){
     
     for (int i = 0 ; i < m; i++) {
         for (int j = 0; j < l; j++) {
-            pheromone[i][j] = (double)(1.0 - rho) * pheromone[i][j];
+            pheromone[i][j] = (double) (1.0 - rho) * pheromone[i][j];
             
             if (mmas) {
                 boundPheromone(i, j);
@@ -272,7 +288,7 @@ void evaporatePheromone(Ant best_ant) {
         // Get the idx in the alphabet of the j'th letter
         // of the ant's solution string
         long int i = best_ant.getLetter(j);
-        pheromone[i][j] = (double)(1.0 - rho) * pheromone[i][j];
+        pheromone[i][j] = (double) (1.0 - rho) * pheromone[i][j];
         
         if (mmas) {
             boundPheromone(i, j);
@@ -324,7 +340,7 @@ void depositPheromone(Ant best_ant) {
             }
         }
     } else {
-        deltaf = 1.0 - (double) best_ant.getStringDistance() / l;
+        deltaf = 1.0 - ((double) best_ant.getStringDistance() / (double) l);
         for (int j = 0; j < l; j++) {
             long int i = best_ant.getLetter(j);
             addPheromone(i, j, deltaf);
@@ -377,6 +393,9 @@ int main(int argc, char *argv[] ){
         for(int i = 0; i < n_ants; i++) {
             // Construct solution
             colony[i].Search();
+            if (local) {
+                colony[i].LocalSearch(b_rep);
+            }
             // Check for new local optimum
             if (best_string_len > colony[i].getStringDistance()) {
                 best_string_len = colony[i].getStringDistance();
@@ -384,27 +403,10 @@ int main(int argc, char *argv[] ){
                 printf("%ld:%ld\n", budget, best_string_len);
             }
             budget++;
-            printf("%li\n", budget);
-        }
-        if (local) {
-            // Best ant does Local Search
-            best_ant.LocalSearch();
-            if (best_string_len > best_ant.getStringDistance()) {
-                best_string_len = best_ant.getStringDistance();
-                printf("%ld:%ld\n", budget, best_string_len);
-            }
-            // Random ant does Local Search
-            long int ant_idx = (long int) ran01(&seed) * n_ants;
-            Ant random_ant = colony[ant_idx];
-            random_ant.LocalSearch();
-            if (best_string_len > random_ant.getStringDistance()) {
-                best_string_len = random_ant.getStringDistance();
-                best_ant = random_ant;
-                printf("%ld:%ld\n", budget, best_string_len);
-            }
         }
         // Update pheromone and probability
-        evaporatePheromone(best_ant);
+        // updateParameters();
+        evaporatePheromone();
         depositPheromone(best_ant);
         calculateProbability();
     }
