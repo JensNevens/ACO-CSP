@@ -25,6 +25,7 @@ CSP*  csp;
 double** pheromone;      /* pheromone matrix */
 double** heuristic;      /* heuristic information matrix */
 double** probability;    /* combined value of pheromone X heuristic information */
+double initial_pheromone;
 
 long int max_budget;     /* The max amount of solutions constructed by the ants */
 long int budget=0;       /* The current amount of solutions constructed */
@@ -40,6 +41,9 @@ double tau_min;
 
 bool local;              /* Flag to indicate whether to use local search */
 double b_rep;            /* Local search parameter */
+
+bool acs;                /* Flag to indicate whether to use local ant system */
+double q0;
 
 std::vector<Ant> colony;
 Ant best_ant;
@@ -57,6 +61,8 @@ void setDefaultParameters() {
     mmas=false;
     local=false;
     b_rep=0.001;
+    acs=false;
+    q0=0.99;
 }
 
 /* Print default parameters */
@@ -71,6 +77,8 @@ void printParameters() {
     << "  mmas: "   << mmas << "\n"
     << "  local: "  << local << "\n"
     << "  b_rep: "  << b_rep << "\n"
+    << "  acs: "    << acs << "\n"
+    << "  q0: "     << q0 << "\n"
     << std::endl;
 }
 
@@ -90,6 +98,8 @@ void printHelp() {
     << "   --mmas: Flag to indicate Min Max Ant System usage\n"
     << "   --local: Flag to indicate Local Search usage\n"
     << "   --brep: Control number of Local Search steps\n"
+    << "   --acs: Flag to indicate Ant Colony System usage\n"
+    << "   --q0: Probability for exploration in Ant Colony System\n"
     << std::endl;
 }
 
@@ -128,6 +138,11 @@ bool readArguments(int argc, char* argv[]) {
         } else if (strcmp(argv[i], "--brep") == 0) {
             b_rep = atof(argv[i+1]);
             i++;
+        } else if (strcmp(argv[i], "--acs") == 0) {
+            acs = true;
+        } else if (strcmp(argv[i], "--q0") == 0) {
+            q0 = atof(argv[i+1]);
+            i++;
         } else if(strcmp(argv[i], "--help") == 0) {
             printHelp();
             return(false);
@@ -138,6 +153,10 @@ bool readArguments(int argc, char* argv[]) {
     }
     if (instance_file==NULL) {
         std::cout << "No instance file provided.\n";
+        return(false);
+    }
+    if (mmas && acs) {
+        std::cout << "Cannot use MMAS and ACS at the same time!\n";
         return(false);
     }
     printParameters();
@@ -174,12 +193,18 @@ void printProbability () {
 void createColony() {
     std::cout << "Creating colony.\n\n";
     for (int i = 0 ; i < n_ants; i++) {
-        colony.push_back(Ant(csp, probability, &seed));
+        if (acs) {
+            colony.push_back(Ant(csp, probability, &seed, q0));
+        } else {
+            colony.push_back(Ant(csp, probability, &seed));
+        }
+        
     }
 }
 
 /* Initialize parameters of the ACO algorithm */
 void initializeParameters() {
+    initial_pheromone = 1.0 / (double) csp->getAlphabetSize();
     if (mmas) {
         tau_max = 1.0 / (double) csp->getAlphabetSize();
         double ratio = (double) csp->getAlphabetSize() * (double) csp->getStringSize();
@@ -207,7 +232,7 @@ void initializePheromone() {
             if (mmas) {
                 pheromone[i][j] = tau_max;
             } else {
-                pheromone[i][j] = 1.0 / (double) m;
+                pheromone[i][j] = initial_pheromone;
             }
         }
     }
@@ -393,6 +418,9 @@ int main(int argc, char *argv[] ){
         for(int i = 0; i < n_ants; i++) {
             // Construct solution
             colony[i].Search();
+            if (acs) {
+                colony[i].LocalPheromoneUpdate(pheromone, rho, initial_pheromone);
+            }
             if (local) {
                 colony[i].LocalSearch(b_rep);
             }
@@ -407,7 +435,7 @@ int main(int argc, char *argv[] ){
         // Update pheromone and probability
         // updateParameters();
         evaporatePheromone();
-        if (mmas) {
+        if (mmas || acs) {
             depositPheromone(best_ant);
         } else {
             depositPheromone();

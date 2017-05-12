@@ -27,14 +27,19 @@ class Ant {
     long int l;
     long int n;
     
+    bool acs;                 /* bool to indicate ACS */
+    double q0;                /* exploration probability */
+    
     void computeStringDistance();
     void clearString();
     long int getNextLetter();
+    long int getProbLetter();
     void printString();
     
 public:
     Ant();
     Ant(CSP *csp_arg, double **prob_info, long int *pseed);
+    Ant(CSP *csp_arg, double **prob_info, long int *pseed, double q);
     ~Ant();
     Ant(Ant const& other);
     
@@ -48,6 +53,8 @@ public:
     long int getStringDistance();
     /* Local Search on the current solution */
     void LocalSearch(double b_rep);
+    /* Local pheromone update rule of ACS */
+    void LocalPheromoneUpdate(double** pheromone, double rho, double initial_pheromone);
     
     
 };

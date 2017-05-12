@@ -29,6 +29,22 @@ Ant::Ant(CSP* csp_arg, double** prob_info, long int *pseed) {
     string = new long int[l];
     string_distance = LONG_MAX;
     string_length = 0;
+    acs = false;
+}
+
+Ant::Ant(CSP* csp_arg, double** prob_info, long int *pseed, double q) {
+    seed = pseed;
+    csp = csp_arg;
+    m = csp->getAlphabetSize();
+    l = csp->getStringSize();
+    n = csp->getSetSize();
+    probability = prob_info;
+    selection_prob = new double[m];
+    string = new long int[l];
+    string_distance = LONG_MAX;
+    string_length = 0;
+    acs = true;
+    q0 = q;
 }
 
 ///* Copy constructor */
@@ -43,6 +59,8 @@ Ant::Ant(Ant const& other) {
     string = new long int[l];
     string_distance = other.string_distance;
     string_length = 0;
+    acs = other.acs;
+    q0 = other.q0;
     for (int i = 0; i < l; i++) {
         string[i] = other.string[i];
     }
@@ -63,7 +81,7 @@ void Ant::freeAnt() {
 
 /* Generate tour using probabilities */
 void Ant::Search() {
-    // Clear the currenc solution
+    // Clear the current solution
     clearString();
     
     // Select first letter at random
@@ -71,12 +89,32 @@ void Ant::Search() {
     string_length++;
     // Select each letter
     for (int i = 1; i < l; i++) {
-        string[i] = getNextLetter();
+        if (acs) {
+            double choice = ran01(seed);
+            if (choice < q0) {
+                // Exploitation
+                string[i] = getProbLetter();
+            } else {
+                // Biased Exploration
+                string[i] = getNextLetter();
+            }
+        } else {
+            string[i] = getNextLetter();
+        }
         string_length++;
     }
     // Compute the quality of the string
     computeStringDistance();
     // printString();
+}
+
+/* Local pheromone update rule of ACS */
+void Ant::LocalPheromoneUpdate(double** pheromone, double rho, double initial_pheromone) {
+    for (int j = 0; j < l; j++) {
+        long int i = getLetter(j);
+        pheromone[i][j] =
+            ((1.0 - rho) * pheromone[i][j]) + (rho * initial_pheromone);
+    }
 }
 
 /* Compute the distance of the string to the CSP set */
@@ -116,6 +154,21 @@ long int Ant::getNextLetter() {
     long int idx = 0;
     while (choice > selection_prob[idx]) idx++;
     return(idx);
+}
+
+/* Obtains the next letter with the highest probability */
+long int Ant::getProbLetter() {
+    long int letter = -1;
+    double letter_prob = 0.0;
+    long int j = string_length;
+    
+    for (long int i = 0; i < m; i++) {
+        if (probability[i][j] > letter_prob) {
+            letter = i;
+            letter_prob = probability[i][j];
+        }
+    }
+    return letter;
 }
 
 /* Get the letter in position i of the string */
