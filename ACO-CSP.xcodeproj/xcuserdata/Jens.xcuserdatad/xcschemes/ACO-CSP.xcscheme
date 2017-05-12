@@ -71,7 +71,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--beta 1.0"
+            argument = "--beta 5.0"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -100,11 +100,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--local"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--brep 0.001"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

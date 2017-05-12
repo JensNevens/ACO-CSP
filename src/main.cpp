@@ -56,7 +56,7 @@ void setDefaultParameters() {
     seed=(long int) time(NULL);
     mmas=false;
     local=false;
-    b_rep=1.0;
+    b_rep=0.001;
 }
 
 /* Print default parameters */
@@ -311,7 +311,7 @@ void depositPheromone(){
     double deltaf;
     
     for (int a = 0; a < n_ants; a++) {
-        deltaf = (double)(1.0 - (colony[a].getStringDistance() / l));
+        deltaf = 1.0 - ((double) colony[a].getStringDistance() / (double) l);
         for (int j = 0; j < l; j++) {
             // Get the idx in the alphabet of the j'th letter
             // of the ant's solution string
@@ -407,7 +407,11 @@ int main(int argc, char *argv[] ){
         // Update pheromone and probability
         // updateParameters();
         evaporatePheromone();
-        depositPheromone(best_ant);
+        if (mmas) {
+            depositPheromone(best_ant);
+        } else {
+            depositPheromone();
+        }
         calculateProbability();
     }
     // Free memory
