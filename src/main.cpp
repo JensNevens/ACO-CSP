@@ -46,6 +46,8 @@ double b_rep;            /* Local search parameter */
 bool acs;                /* Flag to indicate whether to use Ant Colony System */
 double q0;
 
+bool verbose;            /* Flag to indicate whether to print lots of info */
+
 std::vector<Ant> colony;
 Ant best_ant;
 long int best_string_len=LONG_MAX;     /* length of the best string found */
@@ -56,6 +58,7 @@ void setDefaultParameters() {
     mmas=false;
     acs=false;
     local=false;
+    verbose=false;
     
     alpha=1;
     beta=1;
@@ -80,6 +83,7 @@ void printParameters() {
     << "  local: "  << local << "\n"
     << "  b_rep: "  << b_rep << "\n"
     << "  q0: "     << q0 << "\n"
+    << "  verbose: " << verbose << "\n"
     << std::endl;
 }
 
@@ -102,6 +106,7 @@ void printHelp() {
     << "   --instance: Path to the instance file\n"
     << "   --brep: Control number of Local Search steps. Default=0.001.\n"
     << "   --q0: Probability for exploration in Ant Colony System. Default=0.9.\n"
+    << "   --v: Flag to indicate verbosity of the output.\n"
     << std::endl;
 }
 
@@ -147,6 +152,8 @@ bool readArguments(int argc, char* argv[]) {
             i++;
         } else if (strcmp(argv[i], "--as") == 0) {
             as = true;
+        } else if (strcmp(argv[i], "--v") == 0) {
+            verbose = true;
         } else if(strcmp(argv[i], "--help") == 0) {
             printHelp();
             return(false);
@@ -163,7 +170,8 @@ bool readArguments(int argc, char* argv[]) {
         std::cout << "Cannot use multiple algorithms at the same time!\n";
         return(false);
     }
-    printParameters();
+    if (verbose)
+        printParameters();
     return(true);
 }
 
@@ -195,7 +203,8 @@ void printProbability () {
 
 /* Create colony structure */
 void createColony() {
-    std::cout << "Creating colony.\n\n";
+    if (verbose)
+        std::cout << "Creating colony.\n\n";
     for (int i = 0 ; i < n_ants; i++) {
         if (acs) {
             colony.push_back(Ant(csp, probability, &seed, q0));
@@ -397,7 +406,7 @@ int main(int argc, char *argv[] ){
         exit(1);
     }
     
-    csp = new CSP(instance_file);
+    csp = new CSP(instance_file, verbose);
     
     initializeParameters();
     initializePheromone();
@@ -439,7 +448,9 @@ int main(int argc, char *argv[] ){
     }
     // Free memory
     freeMemory();
-    std::cout << "\nEnd ACO execution.\n" << std::endl;
-    std::cout << "\nBest solution found: " << best_string_len << "\n";
+    if (verbose) {
+        std::cout << "\nEnd ACO execution.\n" << std::endl;
+        std::cout << "\nBest solution found: " << best_string_len << "\n";
+    }
     std::cout << best_string_len << "\n";
 }

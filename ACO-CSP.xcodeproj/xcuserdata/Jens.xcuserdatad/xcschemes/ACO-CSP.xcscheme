@@ -68,30 +68,38 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--mmas"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--acs"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "--acs"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "--local"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--ants 50"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--ants 40"
+            argument = "--alpha 2.2"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--alpha 1.79"
+            argument = "--beta 9.88"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--beta 9.9"
+            argument = "--rho 0.25"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--rho 0.23"
+            argument = "--brep 0.001"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--q0 0.24"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -111,11 +119,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--brep 0.001"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--q0 0.9"
+            argument = "--v"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

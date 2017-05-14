@@ -14,14 +14,15 @@
 #include "csp.hpp"
 
 /* Constructor */
-CSP::CSP(const char *file_name) {
+CSP::CSP(const char *file_name, bool verbose) {
     // Create an ifstream
     std::ifstream infile(file_name);
     if (!infile.is_open()) {
         std::cerr << "Failed to open " << file_name << '\n';
         exit(1);
     }
-    printf("\nReading csp-file %s ... \n", file_name);
+    if (verbose)
+        printf("\nReading csp-file %s ... \n", file_name);
     
     // Read alphabet length (m), set size (n) and string length (l)
     infile >> m;
@@ -43,14 +44,14 @@ CSP::CSP(const char *file_name) {
         infile >> set[i];
     }
     
-    printf("... done\n\n");
-    printParameters();
+    if (verbose) {
+        printf("... done\n\n");
+        printParameters();
+    }
 }
 
 /* Destructor */
-CSP::~CSP() {
-    printf("CSP Destructor");
-    
+CSP::~CSP() {    
     free(alphabet);
     free(set);
 }

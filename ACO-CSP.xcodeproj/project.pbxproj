@@ -28,6 +28,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B43768571EC8714F0034F3FA /* run-ants.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "run-ants.sh"; sourceTree = "<group>"; };
 		B454DFCF1EC0C18100FA3A1E /* 2-30-10000-1-9.csp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "2-30-10000-1-9.csp"; sourceTree = "<group>"; };
 		B454DFD01EC0C18100FA3A1E /* 2-30-10000-2-8.csp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "2-30-10000-2-8.csp"; sourceTree = "<group>"; };
 		B454DFD11EC0C18100FA3A1E /* 2-40-10000-1-7.csp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "2-40-10000-1-7.csp"; sourceTree = "<group>"; };
@@ -51,6 +52,7 @@
 		B454DFE31EC0C18100FA3A1E /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		B454DFE41EC0CC1F00FA3A1E /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		B454DFE51EC0CC1F00FA3A1E /* utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
+		B473A8D61EC8A5B5008BDA15 /* run-algorithms.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "run-algorithms.sh"; sourceTree = "<group>"; };
 		B49AAD1A1EC0994D00E6F0FC /* ACO-CSP */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "ACO-CSP"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B49AAD261EC0999C00E6F0FC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		B49AAD571EC09B8C00E6F0FC /* boxplot-params.R */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.rez; path = "boxplot-params.R"; sourceTree = "<group>"; };
@@ -126,6 +128,8 @@
 		B49AAD111EC0994D00E6F0FC = {
 			isa = PBXGroup;
 			children = (
+				B43768571EC8714F0034F3FA /* run-ants.sh */,
+				B473A8D61EC8A5B5008BDA15 /* run-algorithms.sh */,
 				B4B5AE3C1EC83CC8004DF3CF /* tuning */,
 				B454DFCD1EC0C18100FA3A1E /* data */,
 				B49AAD611EC09E4E00E6F0FC /* .gitignore */,

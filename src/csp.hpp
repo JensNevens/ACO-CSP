@@ -23,7 +23,7 @@ class CSP {
     void printParameters();
     
 public:
-    CSP(const char *file_name);
+    CSP(const char *file_name, bool verbose);
     ~CSP();
     long int getAlphabetSize();  /* m: the size of the alphabet A */
     long int getSetSize();       /* n: the size of the string set S */
