@@ -27,6 +27,7 @@ double** heuristic;      /* heuristic information matrix */
 double** probability;    /* combined value of pheromone X heuristic information */
 double initial_pheromone;
 
+bool as;                 /* Flag to indicate whether to use Ant System */
 long int max_budget;     /* The max amount of solutions constructed by the ants */
 long int budget=0;       /* The current amount of solutions constructed */
 double alpha;
@@ -35,14 +36,14 @@ double rho;
 long int n_ants;
 long int seed = -1;
 
-bool mmas;               /* Flag to indicate whether to use mmas */
+bool mmas;               /* Flag to indicate whether to use Min Max Ant System */
 double tau_max;
 double tau_min;
 
 bool local;              /* Flag to indicate whether to use local search */
 double b_rep;            /* Local search parameter */
 
-bool acs;                /* Flag to indicate whether to use local ant system */
+bool acs;                /* Flag to indicate whether to use Ant Colony System */
 double q0;
 
 std::vector<Ant> colony;
@@ -51,18 +52,20 @@ long int best_string_len=LONG_MAX;     /* length of the best string found */
 
 /* Default parameters */
 void setDefaultParameters() {
+    as=false;
+    mmas=false;
+    acs=false;
+    local=false;
+    
     alpha=1;
     beta=1;
-    rho=0.06;
+    rho=0.1;
     n_ants=10;
     max_budget=1000;
     instance_file=NULL;
     seed=(long int) time(NULL);
-    mmas=false;
-    local=false;
     b_rep=0.001;
-    acs=false;
-    q0=0.99;
+    q0=0.9;
 }
 
 /* Print default parameters */
@@ -74,10 +77,8 @@ void printParameters() {
     << "  rho: "    << rho << "\n"
     << "  budget: " << max_budget << "\n"
     << "  seed: "   << seed << "\n"
-    << "  mmas: "   << mmas << "\n"
     << "  local: "  << local << "\n"
     << "  b_rep: "  << b_rep << "\n"
-    << "  acs: "    << acs << "\n"
     << "  q0: "     << q0 << "\n"
     << std::endl;
 }
@@ -88,18 +89,19 @@ void printHelp() {
     << "   ./aco --ants <int> --alpha <float> --beta <float> --rho <float> --budget <int> --seed <int> --instance <path>\n\n"
     << "Example: ./aco --budget 1000 --seed 123 --instance 2-30-10000-1-9.csp\n\n"
     << "\nACO flags:\n"
+    << "   --as: Flag to inidcate Ant System usage\n"
+    << "   --mmas: Flag to indicate Min Max Ant System usage\n"
+    << "   --acs: Flag to indicate Ant Colony System usage\n"
+    << "   --local: Flag to indicate Local Search usage\n"
     << "   --ants: Number of ants to build every iteration. Default=10.\n"
     << "   --alpha: Alpha parameter (float). Default=1.\n"
     << "   --beta: Beta parameter (float). Default=1.\n"
-    << "   --rho: Rho parameter (float). Defaut=0.2.\n"
+    << "   --rho: Rho parameter (float). Defaut=0.1.\n"
     << "   --budget: Maximum number of strings to build (integer). Default=1000.\n"
     << "   --seed: Number for the random seed generator.\n"
     << "   --instance: Path to the instance file\n"
-    << "   --mmas: Flag to indicate Min Max Ant System usage\n"
-    << "   --local: Flag to indicate Local Search usage\n"
-    << "   --brep: Control number of Local Search steps\n"
-    << "   --acs: Flag to indicate Ant Colony System usage\n"
-    << "   --q0: Probability for exploration in Ant Colony System\n"
+    << "   --brep: Control number of Local Search steps. Default=0.001.\n"
+    << "   --q0: Probability for exploration in Ant Colony System. Default=0.9.\n"
     << std::endl;
 }
 
@@ -143,6 +145,8 @@ bool readArguments(int argc, char* argv[]) {
         } else if (strcmp(argv[i], "--q0") == 0) {
             q0 = atof(argv[i+1]);
             i++;
+        } else if (strcmp(argv[i], "--as") == 0) {
+            as = true;
         } else if(strcmp(argv[i], "--help") == 0) {
             printHelp();
             return(false);
@@ -155,8 +159,8 @@ bool readArguments(int argc, char* argv[]) {
         std::cout << "No instance file provided.\n";
         return(false);
     }
-    if (mmas && acs) {
-        std::cout << "Cannot use MMAS and ACS at the same time!\n";
+    if ((mmas && acs) || (mmas && as) || (acs && as)) {
+        std::cout << "Cannot use multiple algorithms at the same time!\n";
         return(false);
     }
     printParameters();
@@ -207,14 +211,6 @@ void initializeParameters() {
     initial_pheromone = 1.0 / (double) csp->getAlphabetSize();
     if (mmas) {
         tau_max = 1.0 / (double) csp->getAlphabetSize();
-        double ratio = (double) csp->getAlphabetSize() * (double) csp->getStringSize();
-        tau_min = tau_max / ratio;
-    }
-}
-
-void updateParameters() {
-    if (mmas) {
-        tau_max = 1.0 / (double) best_string_len;
         double ratio = (double) csp->getAlphabetSize() * (double) csp->getStringSize();
         tau_min = tau_max / ratio;
     }
@@ -290,17 +286,15 @@ void boundPheromone(long int i, long int j) {
 }
 
 /* Pheromone evaporation */
-void evaporatePheromone(){
+void evaporatePheromone() {
     long int m = csp->getAlphabetSize();
     long int l = csp->getStringSize();
     
-    for (int i = 0 ; i < m; i++) {
+    for (int i = 0; i < m; i++) {
         for (int j = 0; j < l; j++) {
             pheromone[i][j] = (double) (1.0 - rho) * pheromone[i][j];
-            
-            if (mmas) {
+            if (mmas)
                 boundPheromone(i, j);
-            }
         }
     }
 }
@@ -418,12 +412,12 @@ int main(int argc, char *argv[] ){
         for(int i = 0; i < n_ants; i++) {
             // Construct solution
             colony[i].Search();
-            if (acs) {
+            // If Ant Colony System, do local pheromone update
+            if (acs)
                 colony[i].LocalPheromoneUpdate(pheromone, rho, initial_pheromone);
-            }
-            if (local) {
+            // If local search, do local search
+            if (local)
                 colony[i].LocalSearch(b_rep);
-            }
             // Check for new local optimum
             if (best_string_len > colony[i].getStringDistance()) {
                 best_string_len = colony[i].getStringDistance();
@@ -432,12 +426,13 @@ int main(int argc, char *argv[] ){
             }
             budget++;
         }
-        // Update pheromone and probability
-        // updateParameters();
+        // Update pheromones and probabilities
         evaporatePheromone();
         if (mmas || acs) {
+            // Only the best ant deposits pheromone
             depositPheromone(best_ant);
-        } else {
+        } else if (as) {
+            // All ants deposit pheromone
             depositPheromone();
         }
         calculateProbability();
@@ -446,4 +441,5 @@ int main(int argc, char *argv[] ){
     freeMemory();
     std::cout << "\nEnd ACO execution.\n" << std::endl;
     std::cout << "\nBest solution found: " << best_string_len << "\n";
+    std::cout << best_string_len << "\n";
 }

@@ -217,7 +217,7 @@ void Ant::LocalSearch(double b_rep) {
                     }
                 }
                 if (max_dist > max) {
-                    N = (int) ((l * m * b_rep) / 3);
+                    N = (int) ((l * m * b_rep) / 3.0);
                 }
                 if (max_dist >= max) {
                     max_dist = max;

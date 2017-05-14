@@ -63,19 +63,35 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "--ants 10"
+            argument = "--as"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--mmas"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--alpha 1.0"
+            argument = "--acs"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--local"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--beta 5.0"
+            argument = "--ants 40"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--rho 0.1"
+            argument = "--alpha 1.79"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--beta 9.9"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--rho 0.23"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -91,23 +107,11 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--instance /Users/Jens/Documents/Git/ACO-CSP/data/random/4-10-200.csp"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--mmas"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--local"
+            argument = "--instance /Users/Jens/Documents/Git/ACO-CSP/data/random/4-10-10.csp"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--brep 0.001"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--acs"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
