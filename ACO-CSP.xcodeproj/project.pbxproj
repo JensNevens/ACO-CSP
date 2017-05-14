@@ -66,6 +66,14 @@
 		B49AAD641EC0A9E500E6F0FC /* ant.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ant.hpp; sourceTree = "<group>"; };
 		B49AAD661EC0A9FC00E6F0FC /* csp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = csp.cpp; sourceTree = "<group>"; };
 		B49AAD671EC0A9FC00E6F0FC /* csp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = csp.hpp; sourceTree = "<group>"; };
+		B4B5AE3D1EC83CC8004DF3CF /* configurations.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = configurations.txt; sourceTree = "<group>"; };
+		B4B5AE3E1EC83CC8004DF3CF /* forbidden.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = forbidden.txt; sourceTree = "<group>"; };
+		B4B5AE3F1EC83CC8004DF3CF /* instances-list.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "instances-list.txt"; sourceTree = "<group>"; };
+		B4B5AE401EC83CC8004DF3CF /* target-runner.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "target-runner.sh"; sourceTree = "<group>"; };
+		B4B5AE411EC83CC8004DF3CF /* parameters.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = parameters.txt; sourceTree = "<group>"; };
+		B4B5AE431EC83CC8004DF3CF /* scenario.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = scenario.txt; sourceTree = "<group>"; };
+		B4B5AE441EC83CC8004DF3CF /* target-evaluator.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "target-evaluator.sh"; sourceTree = "<group>"; };
+		B4B5AE451EC83CC8004DF3CF /* target-runner-windows.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "target-runner-windows.sh"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +126,7 @@
 		B49AAD111EC0994D00E6F0FC = {
 			isa = PBXGroup;
 			children = (
+				B4B5AE3C1EC83CC8004DF3CF /* tuning */,
 				B454DFCD1EC0C18100FA3A1E /* data */,
 				B49AAD611EC09E4E00E6F0FC /* .gitignore */,
 				B49AAD5E1EC09D7800E6F0FC /* LICENSE */,
@@ -169,6 +178,21 @@
 				B49AAD5C1EC09B8C00E6F0FC /* wilcoxon.R */,
 			);
 			path = "R-scripts";
+			sourceTree = "<group>";
+		};
+		B4B5AE3C1EC83CC8004DF3CF /* tuning */ = {
+			isa = PBXGroup;
+			children = (
+				B4B5AE3D1EC83CC8004DF3CF /* configurations.txt */,
+				B4B5AE3E1EC83CC8004DF3CF /* forbidden.txt */,
+				B4B5AE3F1EC83CC8004DF3CF /* instances-list.txt */,
+				B4B5AE401EC83CC8004DF3CF /* target-runner.sh */,
+				B4B5AE411EC83CC8004DF3CF /* parameters.txt */,
+				B4B5AE431EC83CC8004DF3CF /* scenario.txt */,
+				B4B5AE441EC83CC8004DF3CF /* target-evaluator.sh */,
+				B4B5AE451EC83CC8004DF3CF /* target-runner-windows.sh */,
+			);
+			path = tuning;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
