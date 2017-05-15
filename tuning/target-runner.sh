@@ -17,7 +17,7 @@
 # Exit with 0 if no error, with 1 in case of error
 ###############################################################################
 EXE=./ACO-CSP
-FIXED_PARAMS="--acs --budget 1000"
+FIXED_PARAMS="--mmas --local --budget 1000"
 
 CONFIG_ID=$1
 INSTANCE_ID=$2
