@@ -1,0 +1,14 @@
+
+Wilcoxon signed rank (paired):
+
+"as"	"mmas"	"acs"
+"as"	NA	0.670694381004242	0.487877908403656
+"mmas"	NA	NA	0.285202279843243
+"acs"	NA	NA	NA
+
+ -> Bonferroni correction:
+
+"as"	"mmas"	"acs"
+"as"	NA	1	1
+"mmas"	NA	NA	0.855606839529729
+"acs"	NA	NA	NA
