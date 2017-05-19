@@ -30,7 +30,7 @@ for instance in ${instancedir}/*.csp; do
       ./ACO-CSP --mmas --local --brep 0.001 --instance ${instance} --budget 1000 --seed ${seed} --ants 50 --alpha 1.10 --beta 9.84 --rho 0.38 >> ${folder}/convergence/localsearch/${filename}/out-${a}-s${seed}.txt
       elif [ $a == mmaslstun ]
       then
-      ./ACO-CSP --mmas --local --brep 0.001 --instance ${instance} --budget 1000 --seed ${seed} --ants ?? --alpha ?? --beta ?? --rho ?? >> ${folder}/convergence/localsearch/${filename}/out-${a}-s${seed}.txt
+      ./ACO-CSP --mmas --local --brep 0.001 --instance ${instance} --budget 1000 --seed ${seed} --ants 5 --alpha 1.30 --beta 7.70 --rho 0.20 >> ${folder}/convergence/localsearch/${filename}/out-${a}-s${seed}.txt
       fi
 
       # Read the output file and extract the best string found

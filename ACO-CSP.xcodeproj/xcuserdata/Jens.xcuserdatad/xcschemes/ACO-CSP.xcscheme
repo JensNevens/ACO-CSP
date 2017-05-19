@@ -68,7 +68,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--mmas"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--acs"
@@ -76,22 +76,22 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--local"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--ants 50"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--alpha 2.2"
+            argument = "--ants 5"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--beta 9.88"
+            argument = "--alpha 1.3"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--rho 0.25"
+            argument = "--beta 7.7"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--rho 0.20"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

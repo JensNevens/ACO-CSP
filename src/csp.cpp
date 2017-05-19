@@ -10,6 +10,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include <stdexcept>
 
 #include "csp.hpp"
 
@@ -19,7 +20,7 @@ CSP::CSP(const char *file_name, bool verbose) {
     std::ifstream infile(file_name);
     if (!infile.is_open()) {
         std::cerr << "Failed to open " << file_name << '\n';
-        exit(1);
+        throw std::invalid_argument("Received an invalid instance file");
     }
     if (verbose)
         printf("\nReading csp-file %s ... \n", file_name);
@@ -51,9 +52,12 @@ CSP::CSP(const char *file_name, bool verbose) {
 }
 
 /* Destructor */
-CSP::~CSP() {    
-    free(alphabet);
-    free(set);
+CSP::~CSP() {
+    delete [] alphabet;
+    for (int i = 0; i < n; i++) {
+        delete [] set[i];
+    }
+    delete [] set;
 }
 
 void CSP::printParameters() {

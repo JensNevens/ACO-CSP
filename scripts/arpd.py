@@ -21,6 +21,7 @@ def calculate_arpd(mode):
         iterables = [['mmas', 'mmas+ls', 'mmas+ls+'], list(range(1,11)) + ['arpd']]
     columns = pd.MultiIndex.from_product(iterables, names=['algorithm', 'rpd'])
     df = pd.DataFrame(index=instances, columns=columns)
+    df.index.name = 'instance'
     # Read the optimal solutions file
     opt = pd.read_csv('./../data/instances_opt.txt', sep=':', index_col=0)
     # Read the files

@@ -20,6 +20,7 @@ def create_summary(mode):
         iterables = [['mmas', 'mmas+ls', 'mmas+ls+'], ['best', 'worst', 'mean', 'std']]
     columns = pd.MultiIndex.from_product(iterables, names=['algorithm', 'measure'])
     df = pd.DataFrame(index=instances, columns=columns)
+    df.index.name = 'instance'
     # Read the files
     # Get the values
     # Put them in the dataframe

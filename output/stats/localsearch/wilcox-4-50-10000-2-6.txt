@@ -1,0 +1,14 @@
+
+Wilcoxon signed rank (paired):
+
+"mmas"	"mmas.ls"	"mmas.ls."
+"mmas"	NA	0.00479191169754284	0.00423658958180175
+"mmas.ls"	NA	NA	0.0889730117018133
+"mmas.ls."	NA	NA	NA
+
+ -> Bonferroni correction:
+
+"mmas"	"mmas.ls"	"mmas.ls."
+"mmas"	NA	0.0143757350926285	0.0127097687454052
+"mmas.ls"	NA	NA	0.26691903510544
+"mmas.ls."	NA	NA	NA
