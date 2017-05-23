@@ -68,15 +68,15 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--mmas"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "--acs"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--local"
+            argument = "--acs"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--local"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--ants 5"
@@ -111,7 +111,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--instance /Users/Jens/Documents/Git/ACO-CSP/data/instances/2-30-10000-1-9.csp"
+            argument = "--instance /Users/Jens/Documents/Git/ACO-CSP/data/instances/20-50-10000-1-1.csp"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
