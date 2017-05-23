@@ -1,7 +1,7 @@
 # ACO-CSP
 
 Solving the Closest String Problem using Ant Colony Optimization.
-Project for the course (Swarm Intelligence)[http://cs.ulb.ac.be/public/teaching/infoh414] implemented by _Jens Nevens_.
+Project for the course [Swarm Intelligence](http://cs.ulb.ac.be/public/teaching/infoh414) implemented by _Jens Nevens_.
 
 ## What is included?
 
